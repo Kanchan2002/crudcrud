@@ -48,6 +48,25 @@
             list_ele.append(new_ele);
            
             });
+           function showcontent(obj2){
+            let list_ele = document.getElementById("list2");
+            let cnt = list_ele.childElementCount;
+            let new_ele = document.createElement("li");
+            new_ele.className = cnt;
+            new_ele.innerHTML = `<p>${obj2.price}-${obj2.description}</p>
+                                <button type="button" class="btn btn-danger del">Delete</button>
+                                <button type="button" class="btn btn-danger edit">Edit</button>`;
+            list_ele.append(new_ele);
+        }
+        window.addEventListener("DOMContentLoaded",()=>{
+            axios.get("https://crudcrud.com/api/1f56108072904060aa27074f8175be00/studentData")
+            .then((response)=>{
+                 console.log(response);
+                 for(let i = 0; i<response.data.length; i++){
+                     showcontent(response.data[i]);
+                 }
+            })
+        })
 
     </script>
 </body>
