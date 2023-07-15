@@ -9,91 +9,75 @@
 <body>
     <div class="container">
         <form id="newform">
-        <div class="row">
             
-            <div class="col">
-                <label for="">choose expenceamount</label>
-                <input type="number" id="famount" class="form-control" placeholder="amount" aria-label="First name">
-            </div>
-            <div class="col">
-                <label for="">Description</label>
-               <input type="text" id="fdesc" class="form-control" placeholder="Description" aria-label="Last name">
-            </div>
-            <div class="col">
-                <label for="inputState">choose a category</label>
-                <select id="inputState"   class="form-select">
-                    <option selected>movie</option>
-                    <option>fuel</option>
-                    <option>food</option>
-                </select>
-            </div>
-            <div class="col">
-                
-                <button type="submit" id="bton" class="btn btn-danger">Add</button>
-            </div>
-           
-        </div>
-        
-    </form>
+            <label for="">Name</label>
+            <input type="text" id="famount" class="form-control" placeholder="enter name" aria-label="First name">
+            <label for="">Email Id</label>
+            <input type="email" id="fdesc" class="form-control" placeholder="Description" aria-label="Last name">
+            <button type="submit" id="bton" class="btn btn-danger">Add</button>
+        </form>
     <div class="list">
         <ul id="list2"></ul>
     </div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
     <script>
         
         const form_ele = document.getElementById("newform");
         form_ele.addEventListener("submit", (ele) => {
             ele.preventDefault();
             let obj = {
+                _id:'',
                 price: document.getElementById("famount").value,
                 description: document.getElementById("fdesc").value,
-                type: document.getElementById("inputState").value,
             };
             let list_ele = document.getElementById("list2");
             let cnt = list_ele.childElementCount;
-            localStorage.setItem(cnt, JSON.stringify(obj));
+            
+           axios.post("https://crudcrud.com/api/eb2723e266a943f6a88c182b43dd4529/studentData",obj)
+           .then((response)=>{
+              obj._id = obj.data._id;
+           }).catch((err)=> console.log(err))           
            
+             showcontent(obj);
+             cnt++
            
-           
+            });
+        function showcontent(obj2){
+            let list_ele = document.getElementById("list2");
+            let cnt = list_ele.childElementCount;
             let new_ele = document.createElement("li");
             new_ele.className = cnt;
-            new_ele.innerHTML = `<p>${obj.price}-${obj.description}-${obj.type}</p>
-                                <button type="button" class="btn btn-danger del">Delete</button>
-                                <button type="button" class="btn btn-danger edit">Edit</button>`;
+            new_ele.innerHTML = `<p>${obj2.price}-${obj2.description}</p>
+            <button type="button" onclick="deleteuser('${obj2._id}')" class="btn btn-danger">Delete</button>
+             <button type="button" onclick="edituser('${obj2._id}')" class="btn btn-danger">Edit</button>`
 
-          
             list_ele.append(new_ele);
-            cnt++;
-            let del_eles = document.getElementsByClassName("del");
-            for (let i = 0; i < del_eles.length; i++) {
-                del_eles[i].addEventListener("click", (e) => {
-                let get_parent = e.target.parentElement;
-                cnt--;
-                get_parent.remove();
-                localStorage.removeItem(get_parent.className);
-                });
-
-            }
-
-            let edit_eles = document.getElementsByClassName("edit");
-            for (let i = 0; i < edit_eles.length; i++) {
-                edit_eles[i].addEventListener("click", (e) => {
-                    let other_get_parent = e.target.parentElement;
-                    let count = other_get_parent.getAttribute("class");
-                    let get_item = localStorage.getItem(count);
-                    let final_obj = JSON.parse(get_item);
-                    document.getElementById("famount").value = final_obj.price;
-                    document.getElementById("fdesc").value = final_obj.description;
-                    document.getElementById("inputState").value = final_obj.type;
-                    cnt--;
-                    other_get_parent.remove();
-                    localStorage.removeItem(count);
-                });
-            }
-
-            
-            });
-
+        }
+        window.addEventListener("DOMContentLoaded",()=>{
+            axios.get("https://crudcrud.com/api/eb2723e266a943f6a88c182b43dd4529/studentData")
+            .then((response)=>{
+                 console.log(response);
+                 for(let i = 0; i<response.data.length; i++){
+                     showcontent(response.data[i]);
+                 }
+            })
+        })
+       function deleteuser(userid){
+          console.log(userid);
+          axios.delete(`https://crudcrud.com/api/eb2723e266a943f6a88c182b43dd4529/studentData/${userid}`)
+          .then((response)=>{
+             removeEle(Event)
+          })
+          .catch((err)=>{
+              console.log(err);
+          })
+       }
+       function removeEle(e){
+            let get_parent = e.target.parentElement;
+            cnt--;
+            get_parent.remove();
+       }
     </script>
 </body>
 </html>
