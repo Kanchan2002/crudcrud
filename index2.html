@@ -27,22 +27,22 @@
         form_ele.addEventListener("submit", (ele) => {
             ele.preventDefault();
             let obj = {
-                _id:'',
+                
                 price: document.getElementById("famount").value,
                 description: document.getElementById("fdesc").value,
             };
             let list_ele = document.getElementById("list2");
             let cnt = list_ele.childElementCount;
             
-           axios.post("https://crudcrud.com/api/eb2723e266a943f6a88c182b43dd4529/studentData",obj)
-           .then((response)=>{
-              obj._id = obj.data._id;
-           }).catch((err)=> console.log(err))           
+           axios.post("https://crudcrud.com/api/191afc08ddc44518bb64f454182938ad/studentData",obj)
+            .then((response)=>{
+                
+            }).catch((err)=> console.log(err))           
+            
+                showcontent(obj);
+                cnt++;
            
-             showcontent(obj);
-             cnt++
-           
-            });
+        });
         function showcontent(obj2){
             let list_ele = document.getElementById("list2");
             let cnt = list_ele.childElementCount;
@@ -55,7 +55,7 @@
             list_ele.append(new_ele);
         }
         window.addEventListener("DOMContentLoaded",()=>{
-            axios.get("https://crudcrud.com/api/eb2723e266a943f6a88c182b43dd4529/studentData")
+            axios.get("https://crudcrud.com/api/191afc08ddc44518bb64f454182938ad/studentData")
             .then((response)=>{
                  console.log(response);
                  for(let i = 0; i<response.data.length; i++){
@@ -64,8 +64,7 @@
             })
         })
        function deleteuser(userid){
-          console.log(userid);
-          axios.delete(`https://crudcrud.com/api/eb2723e266a943f6a88c182b43dd4529/studentData/${userid}`)
+          axios.delete(`https://crudcrud.com/api/191afc08ddc44518bb64f454182938ad/studentData/${userid}`)
           .then((response)=>{
              removeEle(Event)
           })
@@ -78,6 +77,34 @@
             cnt--;
             get_parent.remove();
        }
+       function edituser(userid){
+            axios.get(`https://crudcrud.com/api/191afc08ddc44518bb64f454182938ad/studentData/${userid}`)
+            .then((response)=>{
+                getvlaue(response.data)
+            })
+       }
+       function getvlaue(obj3){
+            document.getElementById("famount").value = obj3.price;
+            document.getElementById("fdesc").value = obj3.description;
+            const form_ele = document.getElementById("newform");
+            form_ele.addEventListener("submit", (ele) => {
+                ele.preventDefault();
+                let obj6 = {
+                    
+                    price: document.getElementById("famount").value,
+                    description: document.getElementById("fdesc").value,
+                };
+                let list_ele = document.getElementById("list2");
+                let cnt = list_ele.childElementCount;
+                axios.patch(`https://crudcrud.com/api/191afc08ddc44518bb64f454182938ad/studentData/${obj3._id}`,obj6)
+                .then((response)=>{
+                 console.log(response);
+                })
+            showcontent(obj6);
+            cnt++;
+        })}
+
+    
     </script>
 </body>
 </html>
